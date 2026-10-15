@@ -23,6 +23,29 @@ Grant administrator access to an existing account with
 `php artisan library:make-admin user@example.com`. The API enforces this role;
 members cannot access administrator operations.
 
+## Docker deployment
+
+The root `Dockerfile` builds the Laravel API in `backend/`; the React frontend
+and mobile app are separate applications and are not included in this image.
+Build from the repository root. The container serves Apache on port `10000` by
+default and uses the hosting platform's `PORT` value when one is provided.
+
+For Render, create a Docker web service and configure its environment variables
+in the Render dashboard, not in the Dockerfile or source control. Set
+`APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY`, `APP_URL`, and
+`FRONTEND_URL`, plus `DB_CONNECTION=mysql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`,
+`DB_USERNAME`, and `DB_PASSWORD` for the managed MySQL database. Generate a
+unique application key with `php artisan key:generate --show` from `backend/`
+and store the output as `APP_KEY` in the dashboard.
+
+After the service can reach its database, run `php artisan migrate --force`
+once (or use the platform's pre-deploy command). Migrations are deliberately
+not run during image builds or every container start. The frontend must be
+deployed separately with `VITE_API_URL` set to the deployed API's `/api` URL.
+Because receipt photos use local storage by default, configure a persistent
+disk or private S3-compatible storage if those uploads must survive container
+replacements.
+
 Run backend feature tests from `backend` with `php artisan test`. Tests use an
 in-memory SQLite database and do not affect the development database.
 

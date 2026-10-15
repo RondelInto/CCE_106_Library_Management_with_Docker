@@ -1,0 +1,14 @@
+.git
+**/.git
+**/vendor
+**/node_modules
+**/.env
+**/.env.*
+frontend
+mobile
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+backend/public/storage
+backend/.phpunit.cache
